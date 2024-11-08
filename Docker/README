@@ -1,0 +1,7 @@
+cd .
+docker build -t sofi:last .
+docker run --ipc=host --name sofi  --network host -v /root/sofi/:/home/sofi -it sofi:last  /bin/bash
+
+cat test | grep -v "app.ariapos.me" | grep -v " Document"
+docker build -t sofi_python .
+docker run -d -it --name devtest --mount type=bind,source=/root/sofi_tivat,target=/home sofi_python"""

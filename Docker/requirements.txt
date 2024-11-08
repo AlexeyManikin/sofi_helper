@@ -1,0 +1,10 @@
+# python modules
+mysqlclient==1.4.6
+prettytable==0.7.2
+psutil==5.7.0
+urllib3==1.25.8
+requests
+pyTelegramBotAPI
+telebot
+PyPDF2<3.0
+pdfminer.six
