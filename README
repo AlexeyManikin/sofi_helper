@@ -1,0 +1,37 @@
+# Название вашего проекта
+
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yourusername/AlexeyManikin/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/AlexeyManikin/sofi_helper.svg)](https://github.com/AlexeyManikin/sofi_helper/issues)
+[![GitHub stars](https://img.shields.io/github/stars/AlexeyManikin/sofi_helper.svg)](https://github.com/AlexeyManikin/sofi_helper/stargazers)
+
+Краткое описание вашего проекта. Здесь вы можете рассказать о том, что делает ваш проект, его цели и преимущества.
+
+## Содержание
+
+- [Установка](#установка)
+- [Лицензия](#лицензия)
+- [Поддержка](#поддержка)
+- [Авторы](#авторы)
+
+## Установка
+
+```bash
+git clone https://github.com/AlexeyManikin/sofi_helper.git
+cd sofi_helper/Docker
+docker-compose build 
+docker-compose up -d
+```
+
+## Лицензия
+
+Этот проект лицензирован под [MIT License](LICENSE).
+
+## Поддержка
+
+Если у вас есть вопросы или предложения, пожалуйста, откройте [новый issue](https://github.com/AlexeyManikin/sofi_helper/issues/new).
+
+## Авторы
+
+- [Ваше имя](https://github.com/AlexeyManikin) - основной автор
+
+Спасибо за ваш интерес к проекту!
