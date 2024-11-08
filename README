@@ -1,3 +1,4 @@
+```markdown
 # Название вашего проекта
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yourusername/AlexeyManikin/blob/master/LICENSE)
@@ -31,6 +32,7 @@ docker-compose up -d
 Если у вас есть вопросы или предложения, пожалуйста, откройте [новый issue](https://github.com/AlexeyManikin/sofi_helper/issues/new).
 
 ## Авторы
+```
 
 - [Ваше имя](https://github.com/AlexeyManikin) - основной автор
 
