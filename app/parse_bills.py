@@ -1,8 +1,9 @@
 __author__ = 'Alexey Y Manikin'
 
 import argparse
-import classes.bill_parser
 import traceback
+
+import classes.bill_parser
 
 if __name__ == '__main__':
     try:

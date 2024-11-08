@@ -1,11 +1,12 @@
 __author__ = 'Alexey Y Manikin'
 
-from pprint import pprint
-from config.config import *
-from config.template import *
 import traceback
 from datetime import datetime
+
 import MySQLdb
+
+from config.config import *
+from config.template import *
 
 
 class BillParser(object):
@@ -103,30 +104,28 @@ class BillParser(object):
         try:
             cursor = self.connection.cursor(MySQLdb.cursors.DictCursor)
             for r in list_orders:
-                print(r['bills_id'])
                 cursor.execute("SELECT count(*) as count_in_base FROM bills WHERE bills_id = %s", (int(r['bills_id']),))
 
                 count_in_base = cursor.fetchone()
                 if count_in_base['count_in_base'] == 0:
-                    sql = "INSERT INTO bills(date_create,bills_id,bills_hash,operator,operator_code,paied_by,table_desc,total,total_discount) "
-                    sql_insert_date = """ VALUE(STR_TO_DATE('%s', '%%Y-%%m-%%d %%H:%%i:%%s'), %s, '%s', '%s', '%s', '%s', '%s', %s, %s)""" \
-                                      % (r['date'],
-                                         r['bills_id'],
-                                         r['bills_hash'],
-                                         r['operator'],
-                                         r['operator_code'],
-                                         r['paid_by'],
-                                         r['table'],
-                                         r['total'],
-                                         r['total_discount'])
+                    sql = """INSERT INTO bills(date_create,bills_id,bills_hash,operator,
+                        operator_code,paied_by,table_desc,total,total_discount) 
+                        VALUE(STR_TO_DATE('%s', '%%Y-%%m-%%d %%H:%%i:%%s'), %s, %s, %s, %s, %s, %s, %s, %s)"""
 
-                    print(sql + sql_insert_date)
-                    cursor.execute(sql + sql_insert_date)
+                    cursor.execute(sql, ((str(r['date']),
+                                          int(r['bills_id']),
+                                          str(r['bills_hash']),
+                                          str(r['operator']),
+                                          str(r['operator_code']),
+                                          str(r['paid_by']),
+                                          str(r['table']),
+                                          float(r['total']),
+                                          float(r['total_discount']))))
                     count_bills += 1
                     for dr in r['dish']:
                         sql_dish = """INSERT INTO dishes(bills_id, name, item_count, price) VALUE( %s, %s, %s, %s)"""
-                        print(sql_dish % (int(r['bills_id']), str(dr['name']), int(dr['count']), float(dr['price'])))
-                        cursor.execute(sql_dish, (int(r['bills_id']), str(dr['name']), int(dr['count']), float(dr['price'])))
+                        cursor.execute(sql_dish,
+                                       (int(r['bills_id']), str(dr['name']), int(dr['count']), float(dr['price'])))
                         count_dish += 1
                     self.connection.commit()
                 else:

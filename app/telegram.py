@@ -1,7 +1,8 @@
 __author__ = 'Alexey Y Manikin'
 
-import classes.telegram
 import traceback
+
+import classes.telegram
 
 if __name__ == '__main__':
     try:

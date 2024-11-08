@@ -1,6 +1,6 @@
 FROM python:3.9.20
 
-LABEL version="1.3"
+LABEL version="0.9"
 MAINTAINER Alexey Manikin <alexey@manikin.dev>
 
 # prepare environment
@@ -28,6 +28,19 @@ RUN $APT_GET_INSTALL \
     git \
     build-essential
 
+# need for developing
+RUN $APT_GET_INSTALL openssh-server && mkdir /root/.ssh;
+
+ADD config/sshd_config /etc/ssh/sshd_config
+ADD config/authorized_keys /root/.ssh/authorized_keys
+
 WORKDIR /home
 COPY requirements.txt ./
 RUN pip install --upgrade pip &&  pip install --no-cache-dir -r requirements.txt
+
+WORKDIR /home/sofi
+
+ADD init.sh /sbin/init.sh
+RUN chmod 755 /sbin/init.sh
+
+CMD ["/sbin/init.sh"]

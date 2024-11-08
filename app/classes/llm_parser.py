@@ -1,14 +1,15 @@
 __author__ = 'Alexey Y Manikin'
 
-from pprint import pprint
-from config.config import *
-import config.model
 import json
-import requests
-import MySQLdb
+import time
 import traceback
 from datetime import date
-import time
+
+import MySQLdb
+import requests
+
+import config.model
+from config.config import *
 
 
 class LLMParser(object):
@@ -41,11 +42,11 @@ class LLMParser(object):
 
     @staticmethod
     def get_list_of_category() -> dict:
-        group_category = {"grocery_shopping" : "продукты",
-             "grocery_alco" : "алкоголь",
-             "fixed_assets": "средства производства и траты на кафе",
-             "salary": "выплаты зарплат",
-             "add": "заработанные деньги"}
+        group_category = {"grocery_shopping": "продукты",
+                          "grocery_alco": "алкоголь",
+                          "fixed_assets": "средства производства и траты на кафе",
+                          "salary": "выплаты зарплат",
+                          "add": "заработанные деньги"}
         return group_category
 
     @staticmethod
@@ -56,10 +57,10 @@ class LLMParser(object):
                 {
                     "role": "system",
                     "content": config.model.get_content_for_llm(today)
-                 },
-                {   "role": "user",
-                    "content": text
-                }
+                },
+                {"role": "user",
+                 "content": text
+                 }
             ],
             "model": config.model.model_name,
             "max_tokens": 1000,
@@ -76,7 +77,7 @@ class LLMParser(object):
         return request_data
 
     def get_llm_answer(self, today: date, text: str) -> dict:
-        #today = date.today()
+        # today = date.today()
         request_data = self.get_json_request(text, today)
         start_time = time.time()
         response = requests.post(config.model.openai_api_url, json=request_data)
@@ -116,8 +117,9 @@ class LLMParser(object):
             self.connection.commit()
 
             cursor.execute(
-                """SELECT id FROM raw_data_from_message WHERE writer = %s AND messages = %s AND date_int = %s AND is_done = 0""", (
-                message_sender, text, message_date))
+                """SELECT id FROM raw_data_from_message WHERE writer = %s AND messages = %s AND date_int = %s AND is_done = 0""",
+                (
+                    message_sender, text, message_date))
 
             data = cursor.fetchone()
             return data['id']
@@ -129,7 +131,7 @@ class LLMParser(object):
     def insert_in_mysql_parsed_data(self, llm_data: dict, raw_id: int):
         try:
             cursor = self.connection.cursor(MySQLdb.cursors.DictCursor)
-            sql =  """INSERT INTO cost_structure(date_create, raw_data_id, group_type, type, summ, date, description, model, promt, prompt_tokens, total_tokens, completion_tokens, elapsed_time, raw_answer, answer_code) VALUE(NOW(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            sql = """INSERT INTO cost_structure(date_create, raw_data_id, group_type, type, summ, date, description, model, promt, prompt_tokens, total_tokens, completion_tokens, elapsed_time, raw_answer, answer_code) VALUE(NOW(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
             cursor.execute(sql, (raw_id,
                                  llm_data['group'].encode('utf-8'),
@@ -138,17 +140,19 @@ class LLMParser(object):
                                  llm_data['date'].encode('utf-8'),
                                  llm_data['description'].encode('utf-8'),
                                  config.model.model_name,
-                                 json.dumps(llm_data['request_data']['request_data'], ensure_ascii=False, indent=2).encode('utf-8'),
+                                 json.dumps(llm_data['request_data']['request_data'], ensure_ascii=False,
+                                            indent=2).encode('utf-8'),
                                  llm_data['usage']['prompt_tokens'],
                                  llm_data['usage']['total_tokens'],
                                  llm_data['usage']['completion_tokens'],
                                  llm_data['usage']['elapsed_time'],
-                                 json.dumps(llm_data['request_data']['response'], ensure_ascii=False, indent=2).encode('utf-8'),
+                                 json.dumps(llm_data['request_data']['response'], ensure_ascii=False, indent=2).encode(
+                                     'utf-8'),
                                  llm_data['request_data']['code']
                                  ))
             self.connection.commit()
 
-            cursor.execute("""SELECT id FROM cost_structure WHERE raw_data_id = %s""" % raw_id )
+            cursor.execute("""SELECT id FROM cost_structure WHERE raw_data_id = %s""" % raw_id)
             data = cursor.fetchone()
 
             if data['id'] > 0:
@@ -163,7 +167,7 @@ class LLMParser(object):
     def test_insert_in_mysql_parsed_data(self, llm_data: dict, raw_id: int):
         try:
             cursor = self.connection.cursor(MySQLdb.cursors.DictCursor)
-            sql =  """INSERT INTO cost_structure_test(date_create, raw_data_id, group_type, type, summ, date, description, model, promt, prompt_tokens, total_tokens, completion_tokens, elapsed_time, raw_answer, answer_code) VALUE(NOW(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            sql = """INSERT INTO cost_structure_test(date_create, raw_data_id, group_type, type, summ, date, description, model, promt, prompt_tokens, total_tokens, completion_tokens, elapsed_time, raw_answer, answer_code) VALUE(NOW(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
             cursor.execute(sql, (raw_id,
                                  llm_data['group'].encode('utf-8'),
@@ -172,17 +176,19 @@ class LLMParser(object):
                                  llm_data['date'].encode('utf-8'),
                                  llm_data['description'].encode('utf-8'),
                                  config.model.model_name,
-                                 json.dumps(llm_data['request_data']['request_data'], ensure_ascii=False, indent=2).encode('utf-8'),
+                                 json.dumps(llm_data['request_data']['request_data'], ensure_ascii=False,
+                                            indent=2).encode('utf-8'),
                                  llm_data['usage']['prompt_tokens'],
                                  llm_data['usage']['total_tokens'],
                                  llm_data['usage']['completion_tokens'],
                                  llm_data['usage']['elapsed_time'],
-                                 json.dumps(llm_data['request_data']['response'], ensure_ascii=False, indent=2).encode('utf-8'),
+                                 json.dumps(llm_data['request_data']['response'], ensure_ascii=False, indent=2).encode(
+                                     'utf-8'),
                                  llm_data['request_data']['code']
                                  ))
             self.connection.commit()
 
-            cursor.execute("""SELECT id FROM cost_structure_test WHERE raw_data_id = %s""" % raw_id )
+            cursor.execute("""SELECT id FROM cost_structure_test WHERE raw_data_id = %s""" % raw_id)
             data = cursor.fetchone()
 
             if data['id'] > 0:
@@ -220,7 +226,7 @@ class LLMParser(object):
         data = cursor.fetchall()
         return data
 
-    def test_parse_date(self, today: date, raw_id: int,  text: str) -> dict:
+    def test_parse_date(self, today: date, raw_id: int, text: str) -> dict:
         llm_data = self.get_llm_answer(today, text)
         if llm_data == {} or llm_data['summ'] == 0:
             return {}

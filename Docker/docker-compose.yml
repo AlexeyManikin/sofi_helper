@@ -1,0 +1,21 @@
+version: "3.9"
+
+x-logging: &logging
+  logging:
+    driver: "json-file"
+    options:
+      max-file: "10"
+      max-size: "100m"
+
+services:
+  devrunner:
+    build: runner/
+    hostname: runner
+    environment:
+      - DEBUG=true
+    ports:
+      - 2222:2222
+    volumes:
+       - ../app:/home/sofi:rw
+    container_name: runner
+    <<: *logging

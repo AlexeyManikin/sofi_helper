@@ -1,18 +1,10 @@
 __author__ = 'Alexey Y Manikin'
 
-import json
-from linecache import cache
+__author__ = 'Alexey Y Manikin'
 
-import requests
-
-import config.model as model
-import config.config
-
-from classes.llm_parser import *
 import traceback
-import classes.read_pdf
+
 import classes.llm_parser
-import pprint
 
 if __name__ == '__main__':
     try:

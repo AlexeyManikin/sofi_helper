@@ -19,7 +19,7 @@ class ReadPDF(object):
         return_str = ""
         for text in text_per_page:
             if "app.ariapos.me" in text:
-                 continue
+                continue
             if " Document" in text:
                 continue
             return_str += text + "\n"
